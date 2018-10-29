@@ -15,8 +15,8 @@ public class Satkytaisto : PhysicsGame
         Level.BackgroundColor = Color.Gold;
         Gravity = new Vector(0, -500);
         // PhysicsStructure pelaaja1
-        PhysicsObject pelaaja1 = LuoPelihahmo(this, -500, Level.Bottom + 200);
-        PhysicsObject pelaaja2 = LuoPelihahmo(this, 500, Level.Bottom + 200);
+        PhysicsObject pelaaja1 = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Mint, "pelaaja1");
+        PhysicsObject pelaaja2 = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.Blue, "pelaaja2");
         //PhysicsObject pelaaja = new PhysicsObject(100, 100, Shape.Hexagon);
         //Add(pelaaja);
         Camera.ZoomToAllObjects();
@@ -37,27 +37,27 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
-    public static PhysicsObject LuoPelihahmo(PhysicsGame game, double x, double y)
+    public static PhysicsObject LuoPelihahmo(PhysicsGame game, double x, double y, Color color, string tag)
     {
         PhysicsObject la1, la2, ra1, ra2, h, b, ll1, ll2, rl1, rl2;
         double sivu = 200;
         // luo pelihahmon osat aliohjemalla, liitä osat yhteen parametrina tulee ukon jalkojen välissä olevan pisteen paikka pelikentällä, jonka suhteen muut palikat luodaan
 
         // Nämä osat muodostavat pelihahmot haavoittuvat osat
-        ll1 = LuoOsa(game, x - ((0.5 * sivu) / Math.Sqrt(2.0)), y + (sivu / Math.Sqrt(2.0)), sivu, 0.25 * sivu, -45d);
-        rl1 = LuoOsa(game, x + ((0.5 * sivu) / Math.Sqrt(2.0)), y + (sivu / Math.Sqrt(2.0)), sivu, 0.25 * sivu, 45d);
-        b = LuoOsa(game, x, y + ((1.5 * sivu) / Math.Sqrt(2.0)) + sivu, 2 * sivu, 0.25 * sivu, 0d);
-        la1 = LuoOsa(game, b.X - 0.5 * sivu, b.Y + 0.885 * sivu, sivu, 0.25 * sivu, 90d);
-        ra1 = LuoOsa(game, b.X + 0.5 * sivu, b.Y + 0.885 * sivu, sivu, 0.25 * sivu, 90d);
+        ll1 = LuoOsa(game, x - ((0.5 * sivu) / Math.Sqrt(2.0)), y + (sivu / Math.Sqrt(2.0)), sivu, 0.25 * sivu, -45d, color, tag + "Body");
+        rl1 = LuoOsa(game, x + ((0.5 * sivu) / Math.Sqrt(2.0)), y + (sivu / Math.Sqrt(2.0)), sivu, 0.25 * sivu, 45d, color, tag + "Body");
+        b = LuoOsa(game, x, y + ((1.5 * sivu) / Math.Sqrt(2.0)) + sivu, 2 * sivu, 0.25 * sivu, 0d, color, tag + "Body");
+        la1 = LuoOsa(game, b.X - 0.5 * sivu, b.Y + 0.885 * sivu, sivu, 0.25 * sivu, 90d, color, tag + "Body");
+        ra1 = LuoOsa(game, b.X + 0.5 * sivu, b.Y + 0.885 * sivu, sivu, 0.25 * sivu, 90d, color, tag + "Body");
 
         //päähän osumisesta lisää damagea
-        h = LuoPaa(game, x, b.Y + 1.5 * sivu, 0.5 * sivu);
+        h = LuoPaa(game, x, b.Y + 1.5 * sivu, 0.5 * sivu, color, tag + "Head");
 
         // Nämä osat tekevät vahinkoa osuessaan vartaloon/päähän
-        ll2 = LuoOsa(game, x - ((1.5 * sivu) / Math.Sqrt(2.0)), y, sivu, 0.25 * sivu, -45d);
-        rl2 = LuoOsa(game, x + ((1.5 * sivu) / Math.Sqrt(2.0)), y, sivu, 0.25 * sivu, 45d);
-        la2 = LuoOsa(game, la1.X - sivu, la1.Y, sivu, 0.25 * sivu, 90d);
-        ra2 = LuoOsa(game, ra1.X + sivu, ra1.Y, sivu, 0.25 * sivu, 90d);
+        ll2 = LuoOsa(game, x - ((1.5 * sivu) / Math.Sqrt(2.0)), y, sivu, 0.25 * sivu, -45d, color, tag + "Ase");
+        rl2 = LuoOsa(game, x + ((1.5 * sivu) / Math.Sqrt(2.0)), y, sivu, 0.25 * sivu, 45d, color, tag + "Ase");
+        la2 = LuoOsa(game, la1.X - sivu, la1.Y, sivu, 0.25 * sivu, 90d, color, tag + "Ase");
+        ra2 = LuoOsa(game, ra1.X + sivu, ra1.Y, sivu, 0.25 * sivu, 90d, color, tag + "Ase");
 
 
 
@@ -79,19 +79,23 @@ public class Satkytaisto : PhysicsGame
         return h;
     }
 
-    public static PhysicsObject LuoOsa(PhysicsGame game, double x, double y, double height, double width, double angle)
+    public static PhysicsObject LuoOsa(PhysicsGame game, double x, double y, double height, double width, double angle, Color color, string tag)
     {
         //Luo suorakulmion muotoisen rakenneosan, parametreinä pituus voi vaihdella
         PhysicsObject osa = new PhysicsObject(width, height, Shape.Rectangle, x, y);
         osa.Angle = Angle.FromDegrees(angle);
+        osa.Color = color;
+        osa.Tag = tag;
         game.Add(osa);
         return osa;
     }
 
-    public static PhysicsObject LuoPaa(PhysicsGame game, double x, double y, double r)
+    public static PhysicsObject LuoPaa(PhysicsGame game, double x, double y, double r, Color color, string tag)
     {
         //luo pää tikku-ukolle
         PhysicsObject head = new PhysicsObject(2 * r, 2 * r, Shape.Circle, x, y);
+        head.Color = color;
+        head.Tag = tag;
         game.Add(head);
         return head;
     }
@@ -99,7 +103,7 @@ public class Satkytaisto : PhysicsGame
     public static AxleJoint LuoLiitos(PhysicsGame game, PhysicsObject osa1, PhysicsObject osa2, double x, double y)
     {
         AxleJoint liitos = new AxleJoint(osa1, osa2, new Vector(x, y));
-        liitos.Softness = 0.1;
+        liitos.Softness = 0.05;
         game.Add(liitos);
         return liitos;
     }
