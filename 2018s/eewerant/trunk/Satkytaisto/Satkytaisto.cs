@@ -12,7 +12,7 @@ public class Satkytaisto : PhysicsGame
         Level.Height = 4000;
         Level.Width = 4000;
         Level.CreateBorders();
-        Level.BackgroundColor = Color.AshGray;
+        Level.BackgroundColor = Color.Gold;
         Gravity = new Vector(0, -500);
         // PhysicsStructure pelaaja1
         PhysicsObject pelaaja1 = LuoPelihahmo(this, 0, Level.Bottom + 200);
@@ -53,16 +53,23 @@ public class Satkytaisto : PhysicsGame
         la2 = LuoOsa(game, la1.X - sivu, la1.Y, sivu, 0.25 * sivu, 90d);
         ra2 = LuoOsa(game, ra1.X + sivu, ra1.Y, sivu, 0.25 * sivu, 90d);
 
-        
+
 
         // Muuta aliohjelmaksi ja korvaa kaikki liitokset axlejointeilla.
-        AxleJoint liitos = new AxleJoint(ra1, ra2, new Vector(ra1.X + (0.5 * sivu), ra1.Y));
-        liitos.Softness = 0.5;
-        game.Add(liitos);
+        AxleJoint rightElbow = LuoLiitos(game, ra1, ra2, ra1.X + (0.5 * sivu), ra1.Y);
+        AxleJoint leftElbow = LuoLiitos(game, la1, la2, la1.X - (0.5 * sivu), la1.Y);
+        AxleJoint leftShoulder = LuoLiitos(game, la1, b, la1.X + (0.5 * sivu), la1.Y);
+        AxleJoint rightShoulder = LuoLiitos(game, ra1, b, ra1.X - (0.5 * sivu), la1.Y);
+        AxleJoint rightKnee = LuoLiitos(game, rl1, rl2, (rl1.X + rl2.X) / 2, (rl1.Y + rl2.Y) / 2);
+        AxleJoint leftKnee = LuoLiitos(game, ll1, ll2, (ll1.X + ll2.X) / 2, (ll1.Y + ll2.Y) / 2);
+        AxleJoint rightHip = LuoLiitos(game, ll1, b, x, y + ((1.5 * sivu) / Math.Sqrt(2.0)));
+        AxleJoint leftHip = LuoLiitos(game, rl1, b, x, y + ((1.5 * sivu) / Math.Sqrt(2.0)));
+        AxleJoint neck = LuoLiitos(game, h, b, x, b.Y + sivu);
 
-        PhysicsStructure pelihahmo = new PhysicsStructure(ll1, ll2, rl1, rl2, b, h, ra1, la1, la2);
-        pelihahmo.Softness = 1;
-        game.Add(pelihahmo);
+
+       // PhysicsStructure pelihahmo = new PhysicsStructure( b, h);
+        //pelihahmo.Softness = 0;
+        //game.Add(pelihahmo);
         return h;
     }
 
@@ -81,6 +88,14 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject head = new PhysicsObject(2 * r, 2 * r, Shape.Circle, x, y);
         game.Add(head);
         return head;
+    }
+
+    public static AxleJoint LuoLiitos(PhysicsGame game, PhysicsObject osa1, PhysicsObject osa2, double x, double y)
+    {
+        AxleJoint liitos = new AxleJoint(osa1, osa2, new Vector(x, y));
+        liitos.Softness = 0.1;
+        game.Add(liitos);
+        return liitos;
     }
 
 
