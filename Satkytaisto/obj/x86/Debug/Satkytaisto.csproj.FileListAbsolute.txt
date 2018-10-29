@@ -55,3 +55,4 @@ C:\Users\Eetu\Desktop\Koulutehtävät\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\S
 C:\Users\Eetu\Desktop\Koulutehtävät\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\Satkytaisto.csproj.CopyComplete
 C:\Users\Eetu\Desktop\Koulutehtävät\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\Satkytaisto.exe
 C:\Users\Eetu\Desktop\Koulutehtävät\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\Satkytaisto.pdb
+C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\Satkytaisto.csprojAssemblyReference.cache
