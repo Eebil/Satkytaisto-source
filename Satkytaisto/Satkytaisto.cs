@@ -15,7 +15,8 @@ public class Satkytaisto : PhysicsGame
         Level.BackgroundColor = Color.Gold;
         Gravity = new Vector(0, -500);
         // PhysicsStructure pelaaja1
-        PhysicsObject pelaaja1 = LuoPelihahmo(this, 0, Level.Bottom + 200);
+        PhysicsObject pelaaja1 = LuoPelihahmo(this, -500, Level.Bottom + 200);
+        PhysicsObject pelaaja2 = LuoPelihahmo(this, 500, Level.Bottom + 200);
         //PhysicsObject pelaaja = new PhysicsObject(100, 100, Shape.Hexagon);
         //Add(pelaaja);
         Camera.ZoomToAllObjects();
@@ -25,6 +26,11 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Right, ButtonState.Pressed, LiikutaPelaajaa, "liikuta pelaaja1 oikealle", pelaaja1, new Vector(5000, 0));
         Keyboard.Listen(Key.Up, ButtonState.Pressed, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja1, new Vector(0, 5000));
         Keyboard.Listen(Key.Down, ButtonState.Pressed, LiikutaPelaajaa, "liikuta pelaaja1 alas", pelaaja1, new Vector(0, -5000));
+
+        Keyboard.Listen(Key.A, ButtonState.Pressed, LiikutaPelaajaa, "liikuta pelaaja2 vasemmalle", pelaaja2, new Vector(-5000, 0));
+        Keyboard.Listen(Key.D, ButtonState.Pressed, LiikutaPelaajaa, "liikuta pelaaja2 oikealle", pelaaja2, new Vector(5000, 0));
+        Keyboard.Listen(Key.W, ButtonState.Pressed, LiikutaPelaajaa, "liikuta pelaaja2 ylös", pelaaja2, new Vector(0, 5000));
+        Keyboard.Listen(Key.S, ButtonState.Pressed, LiikutaPelaajaa, "liikuta pelaaja2 alas", pelaaja2, new Vector(0, -5000));
 
 
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
