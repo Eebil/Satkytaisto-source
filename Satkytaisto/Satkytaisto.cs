@@ -12,7 +12,7 @@ public class Satkytaisto : PhysicsGame
         Level.Height = 4000;
         Level.Width = 4000;
         Level.CreateBorders();
-        Level.BackgroundColor = Color.Gold;
+        Level.BackgroundColor = Color.Black;
         Gravity = new Vector(0, -500);
         // PhysicsStructure pelaaja1
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.Mint, "pelaaja1");
@@ -26,10 +26,15 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject pelaaja2Ra = p2Objects[7];
         PhysicsObject pelaaja2La = p2Objects[5];
 
-        Camera.ZoomToAllObjects();
+        //7foreach (PhysicsObject osa in p1Objects)
+        //{
+        //    osa.CollisionIgnoreGroup = 1;
+        //}
 
-        //Camera.ZoomFactor = 0.5;          TODO: kamera pehmeämmäksi tässä ratkaisussa
-        //Camera.Follow(pelaaja1, pelaaja2);
+        //Camera.ZoomToAllObjects();
+
+        Camera.ZoomFactor = 0.5;          //TODO: kamera pehmeämmäksi tässä ratkaisussa
+        Camera.Follow(pelaaja1, pelaaja2);
 
         // luo aliohjelma tikku-ukon luomiseen
 
@@ -39,6 +44,7 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja1, new Vector(0, 5000));
         Keyboard.Listen(Key.Down, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 alas", pelaaja1, new Vector(0, -5000));
 
+        //saisiko kädet heilahtamaan vartalon suuntaisesti?
         Keyboard.Listen(Key.RightShift, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia ylös", pelaaja1Ra, pelaaja1La, new Vector(0, 1000));
         Keyboard.Listen(Key.RightControl, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia alas", pelaaja1Ra, pelaaja1La, new Vector(0, -1000));
 
@@ -50,14 +56,14 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.G, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia ylös", pelaaja2Ra, pelaaja2La, new Vector(0, 1000));
         Keyboard.Listen(Key.V, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia alas", pelaaja2Ra, pelaaja2La, new Vector(0, -1000));
 
-        //TODO: Törmäykset  !!!! KYSY NEUVOA !!!!
-       /* foreach (PhysicsObject osa in p1Objects)
+        //TODO: Törmäykset  SOLVED, Lisää kaikki muutkin handlerit
+        foreach (PhysicsObject osa in p1Objects)
         {
-            if (osa.Tag == "pelaaja1Ase")
+            if (osa.Tag.ToString() == "pelaaja1Ase")
             {
-                AddCollisionHandler(osa, "pelaaja2Body", CollisionHandler.ExplodeBoth(1000, false));
+                AddCollisionHandler(osa, "pelaaja2Body", Pelaaja1Osuu);
             }
-        }*/
+        }
         
 
 
@@ -65,12 +71,17 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
-    /*private void Pelaaja1Osuu(PhysicsObject pelaaja1Ase, PhysicsObject pelaaja2Body)
+    private void Pelaaja1Osuu(PhysicsObject pelaaja1Ase, PhysicsObject pelaaja2Body)
     {
         //TODO: Pelaaja2Health--
-        CollisionHandler.ExplodeBoth(1000, false);
+        Explosion osuma = new Explosion(200);
+        osuma.Position = pelaaja2Body.Position;
+        osuma.Speed = 1000;
+        osuma.Force = 1000;
+        Add(osuma);
+
        
-    }*/
+    }
 
     private void HeilautaKasia(PhysicsObject ra, PhysicsObject la, Vector suunta)
     {
@@ -112,7 +123,7 @@ public class Satkytaisto : PhysicsGame
 
         List<PhysicsObject> objects = new List<PhysicsObject>() { ll1, ll2, rl1, rl2, la1, la2, ra1, ra2, b, h };
 
-        // Muuta aliohjelmaksi ja korvaa kaikki liitokset axlejointeilla.
+        // Muuta aliohjelmaksi ja korvaa kaikki liitokset axlejointeilla. DONE
         AxleJoint rightElbow = LuoLiitos(game, ra1, ra2, ra1.X + (0.5 * sivu), ra1.Y);
         AxleJoint leftElbow = LuoLiitos(game, la1, la2, la1.X - (0.5 * sivu), la1.Y);
         AxleJoint leftShoulder = LuoLiitos(game, la1, b, la1.X + (0.5 * sivu), la1.Y);
@@ -123,10 +134,7 @@ public class Satkytaisto : PhysicsGame
         AxleJoint leftHip = LuoLiitos(game, rl1, b, x, y + ((1.5 * sivu) / Math.Sqrt(2.0)));
         AxleJoint neck = LuoLiitos(game, h, b, x, b.Y + sivu);
 
-
-       // PhysicsStructure pelihahmo = new PhysicsStructure( b, h);
-        //pelihahmo.Softness = 0;
-        //game.Add(pelihahmo);
+        // Tee Lista osista ja palauta kaikki pääohjelman käyttöön
         return objects;
     }
 
