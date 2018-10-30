@@ -26,10 +26,10 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject pelaaja2Ra = p2Objects[7];
         PhysicsObject pelaaja2La = p2Objects[5];
 
-        //7foreach (PhysicsObject osa in p1Objects)
-        //{
-        //    osa.CollisionIgnoreGroup = 1;
-        //}
+        /*foreach (PhysicsObject osa in p1Objects)
+        {
+            osa.CollisionIgnoreGroup = 1;
+        }*/
 
         //Camera.ZoomToAllObjects();
 
@@ -56,14 +56,9 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.G, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia ylös", pelaaja2Ra, pelaaja2La, new Vector(0, 1000));
         Keyboard.Listen(Key.V, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia alas", pelaaja2Ra, pelaaja2La, new Vector(0, -1000));
 
-        //TODO: Törmäykset  SOLVED, Lisää kaikki muutkin handlerit
-        foreach (PhysicsObject osa in p1Objects)
-        {
-            if (osa.Tag.ToString() == "pelaaja1Ase")
-            {
-                AddCollisionHandler(osa, "pelaaja2Body", Pelaaja1Osuu);
-            }
-        }
+        LisaaTormayskasittelija(p1Objects, "pelaaja1Ase", "pelaaja1Head", "pelaaja2Body");
+        LisaaTormayskasittelija(p2Objects, "pelaaja2Ase", "pelaaja2Head", "pelaaja1Body");
+       
         
 
 
@@ -71,13 +66,28 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
-    private void Pelaaja1Osuu(PhysicsObject pelaaja1Ase, PhysicsObject pelaaja2Body)
+    private void LisaaTormayskasittelija(List<PhysicsObject> osat, string ase, string head, string body)
     {
-        //TODO: Pelaaja2Health--
+        //TODO: Törmäykset  SOLVED, Lisää kaikki muutkin handlerit
+        foreach (PhysicsObject osa in osat)
+        {
+            if (osa.Tag.ToString() == ase || osa.Tag.ToString() == head)
+            {
+                AddCollisionHandler(osa, body, BodyShot);
+            }
+        }
+    }
+
+    private void BodyShot(PhysicsObject hitter, PhysicsObject target)
+    {
+        // if(target.Tag.ToString() == "pelaaja2Body") , jne kunhan helat on liätty..
+        // TODO: Pelaaja2Health-- 
         Explosion osuma = new Explosion(200);
-        osuma.Position = pelaaja2Body.Position;
+        osuma.Position = target.Position;
         osuma.Speed = 1000;
         osuma.Force = 1000;
+        osuma.Sound = null;
+
         Add(osuma);
 
        
