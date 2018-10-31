@@ -56,3 +56,9 @@ C:\Users\Eetu\Desktop\Koulutehtävät\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\S
 C:\Users\Eetu\Desktop\Koulutehtävät\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\Satkytaisto.exe
 C:\Users\Eetu\Desktop\Koulutehtävät\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\Satkytaisto.pdb
 C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\obj\x86\Debug\Satkytaisto.csprojAssemblyReference.cache
+C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\bin\Windows\Debug\Content\hit.xnb
+C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\bin\Windows\Debug\Content\block.xnb
+C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\bin\Windows\Debug\Content\finisher.xnb
+C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\bin\Windows\Debug\Content\XDerpacito.wma
+C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\bin\Windows\Debug\Content\XDerpacito.xnb
+C:\Users\Liisa\Desktop\Ohjelmointi\ht\Satkytaisto\bin\Windows\Debug\Content\headshot.xnb

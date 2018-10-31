@@ -7,6 +7,15 @@ using Jypeli.Widgets;
 
 public class Satkytaisto : PhysicsGame
 {
+    int pelaaja1Hitpoints = 100;
+    int pelaaja2Hitpoints = 100;
+
+    SoundEffect bodyShot = LoadSoundEffect("hit");
+    SoundEffect finisher = LoadSoundEffect("finisher");
+    SoundEffect block = LoadSoundEffect("block");
+    SoundEffect headShot = LoadSoundEffect("headshot");
+
+
     public override void Begin()
     {
         Level.Height = 4000;
@@ -14,6 +23,9 @@ public class Satkytaisto : PhysicsGame
         Level.CreateBorders();
         Level.BackgroundColor = Color.Black;
         Gravity = new Vector(0, -500);
+        MediaPlayer.Play("XDerpacito");
+        MediaPlayer.IsRepeating = true;
+        MediaPlayer.Volume = 0.5;
         // PhysicsStructure pelaaja1
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.Mint, "pelaaja1");
         List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Blue, "pelaaja2");
@@ -26,10 +38,11 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject pelaaja2Ra = p2Objects[7];
         PhysicsObject pelaaja2La = p2Objects[5];
 
-        /*foreach (PhysicsObject osa in p1Objects)
+        foreach (PhysicsObject osa in p1Objects)
         {
-            osa.CollisionIgnoreGroup = 1;
-        }*/
+            if (osa.Tag.ToString() == "pelaaja1Body")
+                osa.CollisionIgnoreGroup = 1;
+        }
 
         //Camera.ZoomToAllObjects();
 
@@ -56,41 +69,106 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.G, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia ylös", pelaaja2Ra, pelaaja2La, new Vector(0, 1000));
         Keyboard.Listen(Key.V, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia alas", pelaaja2Ra, pelaaja2La, new Vector(0, -1000));
 
-        LisaaTormayskasittelija(p1Objects, "pelaaja1Ase", "pelaaja1Head", "pelaaja2Body");
-        LisaaTormayskasittelija(p2Objects, "pelaaja2Ase", "pelaaja2Head", "pelaaja1Body");
-       
-        
+        LisaaTormayskasittelija(p1Objects, "pelaaja1Ase", "pelaaja1Head", "pelaaja2Body", "pelaaja2Head", "pelaaja2Ase");
+        LisaaTormayskasittelija(p2Objects, "pelaaja2Ase", "pelaaja2Head", "pelaaja1Body", "pelaaja1Head", "pelaaja1Ase");
+
+
 
 
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
-    private void LisaaTormayskasittelija(List<PhysicsObject> osat, string ase, string head, string body)
+    private void LisaaTormayskasittelija(List<PhysicsObject> osat, string hitterAse, string hitterHead, string targetBody, string targetHead, string targetAse)
     {
-        //TODO: Törmäykset  SOLVED, Lisää kaikki muutkin handlerit
+        //TODO: (Ase--> body -.... Head ----> body) (Ase--->Head .....Ase---->Ase)  (Head-->Head)
         foreach (PhysicsObject osa in osat)
         {
-            if (osa.Tag.ToString() == ase || osa.Tag.ToString() == head)
+            if (osa.Tag.ToString() == hitterAse || osa.Tag.ToString() == hitterHead)
             {
-                AddCollisionHandler(osa, body, BodyShot);
+                AddCollisionHandler(osa, targetBody, BodyShot);
+                AddCollisionHandler(osa, targetHead, HeadShot);
+                AddCollisionHandler(osa, targetAse, BlockShot);
             }
         }
     }
 
-    private void BodyShot(PhysicsObject hitter, PhysicsObject target)
+    private void BlockShot(IPhysicsObject hitter, IPhysicsObject target)
     {
-        // if(target.Tag.ToString() == "pelaaja2Body") , jne kunhan helat on liätty..
-        // TODO: Pelaaja2Health-- 
         Explosion osuma = new Explosion(200);
         osuma.Position = target.Position;
-        osuma.Speed = 1000;
-        osuma.Force = 1000;
-        osuma.Sound = null;
+        osuma.Speed = 500;
+        osuma.Force = 500;
+        osuma.Image = null;
+        osuma.Sound = block;
+        Add(osuma); 
+    }
 
+    private void HeadShot(IPhysicsObject hitter, IPhysicsObject target)
+    {
+        if (target.Tag.ToString() == "pelaaja2Head")
+        {
+            pelaaja2Hitpoints -= 10;
+            if (pelaaja2Hitpoints <= 0)
+            {
+                target.Destroy();
+                finisher.Play();
+                // ClearControls(); Maybe?
+                //TODO PELAAJA 1 VOITTI
+            }
+        }
+
+        if (target.Tag.ToString() == "pelaaja1Head")
+        {
+            pelaaja1Hitpoints -= 10;
+            if (pelaaja1Hitpoints <= 0)
+            {
+                target.Destroy();
+                finisher.Play();
+                //TODO PELAAJA 2 VOITTI
+            }
+        }
+
+        Explosion osuma = new Explosion(200);
+        osuma.Position = target.Position;
+        osuma.Speed = 500;
+        osuma.Force = 500;
+        osuma.Sound = headShot;
+        Add(osuma);
+    }
+
+
+    private void BodyShot(PhysicsObject hitter, PhysicsObject target)
+    {
+        if (target.Tag.ToString() == "pelaaja2Body")
+        {
+            pelaaja2Hitpoints -= 5;
+            if (pelaaja2Hitpoints <= 0)
+            {
+                target.Destroy();
+                finisher.Play();
+            }
+        }
+        // Tässä toistoa, mutta en osaa antaa lisää parametreja tuolta collision handlereista
+        if (target.Tag.ToString() == "pelaaja1Body")
+        {
+            pelaaja1Hitpoints -= 5;
+            if (pelaaja1Hitpoints <= 0)
+            {
+                target.Destroy();
+                finisher.Play();
+            }
+        }
+
+
+        Explosion osuma = new Explosion(200);
+        osuma.Position = target.Position;
+        osuma.Speed = 500;
+        osuma.Force = 500;
+        osuma.Sound = bodyShot;
         Add(osuma);
 
-       
+
     }
 
     private void HeilautaKasia(PhysicsObject ra, PhysicsObject la, Vector suunta)
@@ -109,7 +187,7 @@ public class Satkytaisto : PhysicsGame
     /// <param hahmon väri="color"></param>
     /// <param hahmon tägi="tag"></param>
     /// <returns></returns>
-    public static List<PhysicsObject> LuoPelihahmo(PhysicsGame game, double x, double y, Color color, string tag)
+    private static List<PhysicsObject> LuoPelihahmo(PhysicsGame game, double x, double y, Color color, string tag)
     {
         PhysicsObject la1, la2, ra1, ra2, h, b, ll1, ll2, rl1, rl2;
         double sivu = 100;
@@ -161,7 +239,7 @@ public class Satkytaisto : PhysicsGame
     /// <param osanVäri="color"></param>
     /// <param osanTägi="tag"></param>
     /// <returns></returns>
-    public static PhysicsObject LuoOsa(PhysicsGame game, double x, double y, double height, double width, double angle, Color color, string tag)
+    private static PhysicsObject LuoOsa(PhysicsGame game, double x, double y, double height, double width, double angle, Color color, string tag)
     {
         //Luo suorakulmion muotoisen rakenneosan, parametreinä pituus voi vaihdella
         PhysicsObject osa = new PhysicsObject(width, height, Shape.Rectangle, x, y);
@@ -183,7 +261,7 @@ public class Satkytaisto : PhysicsGame
     /// <param päänVäri="color"></param>
     /// <param päänTägi="tag"></param>
     /// <returns></returns>
-    public static PhysicsObject LuoPaa(PhysicsGame game, double x, double y, double r, Color color, string tag)
+    private static PhysicsObject LuoPaa(PhysicsGame game, double x, double y, double r, Color color, string tag)
     {
         //luo pää tikku-ukolle
         PhysicsObject head = new PhysicsObject(2 * r, 2 * r, Shape.Circle, x, y);
@@ -203,7 +281,7 @@ public class Satkytaisto : PhysicsGame
     /// <param nivelenX-koordinaatti="x"></param>
     /// <param nivelenY-koordinaatti="y"></param>
     /// <returns></returns>
-    public static AxleJoint LuoLiitos(PhysicsGame game, PhysicsObject osa1, PhysicsObject osa2, double x, double y)
+    private static AxleJoint LuoLiitos(PhysicsGame game, PhysicsObject osa1, PhysicsObject osa2, double x, double y)
     {
         AxleJoint liitos = new AxleJoint(osa1, osa2, new Vector(x, y));
         liitos.Softness = 0.05;
@@ -212,7 +290,7 @@ public class Satkytaisto : PhysicsGame
     }
 
 
-    public void LiikutaPelaajaa(PhysicsObject pelaaja, Vector suunta)
+    private void LiikutaPelaajaa(PhysicsObject pelaaja, Vector suunta)
     {
         pelaaja.Push(suunta);
     }
