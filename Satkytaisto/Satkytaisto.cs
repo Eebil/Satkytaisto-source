@@ -21,7 +21,7 @@ public class Satkytaisto : PhysicsGame
         Level.Height = 4000;
         Level.Width = 4000;
         Level.CreateBorders();
-        Level.BackgroundColor = Color.Black;
+        Level.BackgroundColor = Color.BloodRed;
         Gravity = new Vector(0, -500);
         MediaPlayer.Play("XDerpacito");
         MediaPlayer.IsRepeating = true;
@@ -38,18 +38,15 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject pelaaja2Ra = p2Objects[7];
         PhysicsObject pelaaja2La = p2Objects[5];
 
-        foreach (PhysicsObject osa in p1Objects)
-        {
-            if (osa.Tag.ToString() == "pelaaja1Body")
-                osa.CollisionIgnoreGroup = 1;
-        }
+
+
+
 
         //Camera.ZoomToAllObjects();
 
-        Camera.ZoomFactor = 0.5;          //TODO: kamera pehmeämmäksi tässä ratkaisussa
+        Camera.ZoomFactor = 0.5;          
         Camera.Follow(pelaaja1, pelaaja2);
 
-        // luo aliohjelma tikku-ukon luomiseen
 
 
         Keyboard.Listen(Key.Left, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 vasemmalle", pelaaja1, new Vector(-5000, 0));
@@ -57,7 +54,7 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja1, new Vector(0, 5000));
         Keyboard.Listen(Key.Down, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 alas", pelaaja1, new Vector(0, -5000));
 
-        //saisiko kädet heilahtamaan vartalon suuntaisesti?
+        //saisiko kädet heilahtamaan vartalon suuntaisesti - todennäköisesti ei ?
         Keyboard.Listen(Key.RightShift, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia ylös", pelaaja1Ra, pelaaja1La, new Vector(0, 1000));
         Keyboard.Listen(Key.RightControl, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia alas", pelaaja1Ra, pelaaja1La, new Vector(0, -1000));
 
@@ -95,10 +92,10 @@ public class Satkytaisto : PhysicsGame
 
     private void BlockShot(IPhysicsObject hitter, IPhysicsObject target)
     {
-        Explosion osuma = new Explosion(200);
+        Explosion osuma = new Explosion(100);
         osuma.Position = target.Position;
-        osuma.Speed = 500;
-        osuma.Force = 500;
+        osuma.Speed = 1000;
+        osuma.Force = 300;
         osuma.Image = null;
         osuma.Sound = block;
         Add(osuma); 
@@ -129,10 +126,10 @@ public class Satkytaisto : PhysicsGame
             }
         }
 
-        Explosion osuma = new Explosion(200);
+        Explosion osuma = new Explosion(100);
         osuma.Position = target.Position;
-        osuma.Speed = 500;
-        osuma.Force = 500;
+        osuma.Speed = 1000;
+        osuma.Force = 300;
         osuma.Sound = headShot;
         Add(osuma);
     }
@@ -161,10 +158,10 @@ public class Satkytaisto : PhysicsGame
         }
 
 
-        Explosion osuma = new Explosion(200);
+        Explosion osuma = new Explosion(100);
         osuma.Position = target.Position;
-        osuma.Speed = 500;
-        osuma.Force = 500;
+        osuma.Speed = 1000;
+        osuma.Force = 300;
         osuma.Sound = bodyShot;
         Add(osuma);
 
@@ -247,6 +244,9 @@ public class Satkytaisto : PhysicsGame
         osa.Color = color;
         osa.Tag = tag;
         game.Add(osa);
+
+        if (osa.Tag.ToString() == "pelaaja1Body") { osa.CollisionIgnoreGroup = 1; }
+        if (osa.Tag.ToString() == "pelaaja2Body") { osa.CollisionIgnoreGroup = 2; }
         return osa;
     }
 
@@ -284,7 +284,7 @@ public class Satkytaisto : PhysicsGame
     private static AxleJoint LuoLiitos(PhysicsGame game, PhysicsObject osa1, PhysicsObject osa2, double x, double y)
     {
         AxleJoint liitos = new AxleJoint(osa1, osa2, new Vector(x, y));
-        liitos.Softness = 0.05;
+        liitos.Softness = 0.01;
         game.Add(liitos);
         return liitos;
     }
