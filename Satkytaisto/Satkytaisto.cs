@@ -21,11 +21,11 @@ public class Satkytaisto : PhysicsGame
         Level.Height = 4000;
         Level.Width = 4000;
         Level.CreateBorders();
-        Level.BackgroundColor = Color.BloodRed;
-        Gravity = new Vector(0, -500);
+        Level.BackgroundColor = Color.Black;
+        Gravity = new Vector(0, -1000);
         MediaPlayer.Play("XDerpacito");
         MediaPlayer.IsRepeating = true;
-        MediaPlayer.Volume = 0.5;
+        MediaPlayer.Volume = 0.3;
         // PhysicsStructure pelaaja1
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.Mint, "pelaaja1");
         List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Blue, "pelaaja2");
