@@ -110,6 +110,7 @@ public class Satkytaisto : PhysicsGame
             {
                 target.Destroy();
                 finisher.Play();
+                Camera.ZoomToLevel();
                 // ClearControls(); Maybe?
                 //TODO PELAAJA 1 VOITTI
             }
@@ -122,6 +123,7 @@ public class Satkytaisto : PhysicsGame
             {
                 target.Destroy();
                 finisher.Play();
+                Camera.ZoomToLevel();
                 //TODO PELAAJA 2 VOITTI
             }
         }
@@ -130,6 +132,8 @@ public class Satkytaisto : PhysicsGame
         osuma.Position = target.Position;
         osuma.Speed = 1000;
         osuma.Force = 300;
+        osuma.Image = null;
+        osuma.Color = Color.Red;
         osuma.Sound = headShot;
         Add(osuma);
     }
@@ -163,6 +167,8 @@ public class Satkytaisto : PhysicsGame
         osuma.Speed = 1000;
         osuma.Force = 300;
         osuma.Sound = bodyShot;
+        osuma.Image = null;
+        osuma.Color = Color.Yellow;
         Add(osuma);
 
 
