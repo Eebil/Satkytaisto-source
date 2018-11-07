@@ -4,10 +4,10 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/hit.wav</File>
-    <File>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/finisher.wav</File>
-    <File>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/XDerpacito.mp3</File>
-    <File>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/block.wav</File>
-    <File>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/headshot.wav</File>
+    <File>C:/MyTemp/ohj1/eewerant/ht/Satkytaisto/Content/hit.wav</File>
+    <File>C:/MyTemp/ohj1/eewerant/ht/Satkytaisto/Content/finisher.wav</File>
+    <File>C:/MyTemp/ohj1/eewerant/ht/Satkytaisto/Content/XDerpacito.mp3</File>
+    <File>C:/MyTemp/ohj1/eewerant/ht/Satkytaisto/Content/block.wav</File>
+    <File>C:/MyTemp/ohj1/eewerant/ht/Satkytaisto/Content/headshot.wav</File>
   </SourceFiles>
 </SourceFileCollection>
