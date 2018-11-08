@@ -7,8 +7,8 @@ using Jypeli.Widgets;
 
 public class Satkytaisto : PhysicsGame
 {
-    int pelaaja1Hitpoints = 100;
-    int pelaaja2Hitpoints = 100;
+    DoubleMeter pelaaja1Hitpoints;
+    DoubleMeter pelaaja2Hitpoints;
 
     SoundEffect bodyShot = LoadSoundEffect("hit");
     SoundEffect finisher = LoadSoundEffect("finisher");
@@ -22,13 +22,13 @@ public class Satkytaisto : PhysicsGame
         Level.Width = 4000;
         Level.CreateBorders();
         Level.BackgroundColor = Color.Black;
-        Gravity = new Vector(0, -1000);
+        Gravity = new Vector(0, -700);
         MediaPlayer.Play("XDerpacito");
         MediaPlayer.IsRepeating = true;
         MediaPlayer.Volume = 0.3;
         // PhysicsStructure pelaaja1
-        List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.Mint, "pelaaja1");
-        List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Blue, "pelaaja2");
+        List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.HotPink, "pelaaja1");
+        List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Gold, "pelaaja2");
 
         PhysicsObject pelaaja1 = p1Objects[9];
         PhysicsObject pelaaja1Ra = p1Objects[7];
@@ -38,14 +38,13 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject pelaaja2Ra = p2Objects[7];
         PhysicsObject pelaaja2La = p2Objects[5];
 
-
-
-
-
         //Camera.ZoomToAllObjects();
 
         Camera.ZoomFactor = 0.5;          
         Camera.Follow(pelaaja1, pelaaja2);
+
+        pelaaja1Hitpoints = CreateHealthbar(pelaaja1Hitpoints, Screen.Right - 200, Screen.Top - 20, "Player 1 Wins");
+        pelaaja2Hitpoints = CreateHealthbar(pelaaja2Hitpoints, Screen.Left + 200, Screen.Top - 20, "Player 2 Wins");
 
 
 
@@ -54,7 +53,6 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja1, new Vector(0, 5000));
         Keyboard.Listen(Key.Down, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 alas", pelaaja1, new Vector(0, -5000));
 
-        //saisiko kädet heilahtamaan vartalon suuntaisesti - todennäköisesti ei ?
         Keyboard.Listen(Key.RightShift, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia ylös", pelaaja1Ra, pelaaja1La, new Vector(0, 1000));
         Keyboard.Listen(Key.RightControl, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia alas", pelaaja1Ra, pelaaja1La, new Vector(0, -1000));
 
@@ -76,9 +74,25 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
+    private DoubleMeter CreateHealthbar(DoubleMeter hitpoints, double x, double y, string message)
+    {
+        hitpoints = new DoubleMeter(100);
+        hitpoints.MaxValue = 100;
+        //hitpoints.LowerLimit += ZeroHp(message);
+
+        ProgressBar hpBar = new ProgressBar(300, 20);
+        hpBar.X = x;
+        hpBar.Y = y;
+        hpBar.BindTo(hitpoints);
+        Add(hpBar);
+
+        return hitpoints;
+    }
+
+
     private void LisaaTormayskasittelija(List<PhysicsObject> osat, string hitterAse, string hitterHead, string targetBody, string targetHead, string targetAse)
     {
-        //TODO: (Ase--> body -.... Head ----> body) (Ase--->Head .....Ase---->Ase)  (Head-->Head)
+        //TODO: (Ase--> body ..... Head ----> body) (Ase--->Head .....Ase---->Ase)  (Head-->Head)
         foreach (PhysicsObject osa in osat)
         {
             if (osa.Tag.ToString() == hitterAse || osa.Tag.ToString() == hitterHead)
@@ -105,25 +119,28 @@ public class Satkytaisto : PhysicsGame
     {
         if (target.Tag.ToString() == "pelaaja2Head")
         {
-            pelaaja2Hitpoints -= 10;
-            if (pelaaja2Hitpoints <= 0)
+            pelaaja2Hitpoints.Value -= 10;
+           // pelaaja2Hitpoints -= 10;
+            if (pelaaja2Hitpoints.Value <= 0)
             {
                 target.Destroy();
                 finisher.Play();
                 Camera.ZoomToLevel();
-                // ClearControls(); Maybe?
+                //ClearControls();
                 //TODO PELAAJA 1 VOITTI
             }
         }
 
         if (target.Tag.ToString() == "pelaaja1Head")
         {
-            pelaaja1Hitpoints -= 10;
-            if (pelaaja1Hitpoints <= 0)
+            pelaaja1Hitpoints.Value -= 10;
+           // pelaaja1Hitpoints -= 10;
+            if (pelaaja1Hitpoints.Value <= 0)
             {
                 target.Destroy();
                 finisher.Play();
                 Camera.ZoomToLevel();
+                //ClearControls();
                 //TODO PELAAJA 2 VOITTI
             }
         }
@@ -143,8 +160,9 @@ public class Satkytaisto : PhysicsGame
     {
         if (target.Tag.ToString() == "pelaaja2Body")
         {
-            pelaaja2Hitpoints -= 5;
-            if (pelaaja2Hitpoints <= 0)
+            pelaaja2Hitpoints.Value -= 5;
+           // pelaaja2Hitpoints -= 5;
+            if (pelaaja2Hitpoints.Value <= 0)
             {
                 target.Destroy();
                 finisher.Play();
@@ -153,8 +171,9 @@ public class Satkytaisto : PhysicsGame
         // Tässä toistoa, mutta en osaa antaa lisää parametreja tuolta collision handlereista
         if (target.Tag.ToString() == "pelaaja1Body")
         {
-            pelaaja1Hitpoints -= 5;
-            if (pelaaja1Hitpoints <= 0)
+            pelaaja1Hitpoints.Value -= 5;
+           // pelaaja1Hitpoints -= 5;
+            if (pelaaja1Hitpoints.Value <= 0)
             {
                 target.Destroy();
                 finisher.Play();
@@ -248,6 +267,8 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject osa = new PhysicsObject(width, height, Shape.Rectangle, x, y);
         osa.Angle = Angle.FromDegrees(angle);
         osa.Color = color;
+        //osa.LinearDamping = 0.999;
+        osa.Restitution = 0.5;
         osa.Tag = tag;
         game.Add(osa);
 
@@ -272,6 +293,7 @@ public class Satkytaisto : PhysicsGame
         //luo pää tikku-ukolle
         PhysicsObject head = new PhysicsObject(2 * r, 2 * r, Shape.Circle, x, y);
         head.Color = color;
+        head.Restitution = 0.5;
         head.Tag = tag;
         game.Add(head);
         return head;
