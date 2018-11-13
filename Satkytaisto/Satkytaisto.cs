@@ -18,6 +18,7 @@ public class Satkytaisto : PhysicsGame
 
     public override void Begin()
     {
+        IsFullScreen = true;
         Level.Height = 4000;
         Level.Width = 4000;
         Level.CreateBorders();
@@ -26,6 +27,8 @@ public class Satkytaisto : PhysicsGame
         MediaPlayer.Play("XDerpacito");
         MediaPlayer.IsRepeating = true;
         MediaPlayer.Volume = 0.3;
+
+        LuoPuu(this, 0, Level.Bottom + 500, 1000, 20, 0.0);
         // PhysicsStructure pelaaja1
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.HotPink, "pelaaja1");
         List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Gold, "pelaaja2");
@@ -37,6 +40,8 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject pelaaja2 = p2Objects[9];
         PhysicsObject pelaaja2Ra = p2Objects[7];
         PhysicsObject pelaaja2La = p2Objects[5];
+
+
 
         //Camera.ZoomToAllObjects();
 
@@ -74,6 +79,24 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
+    private static void LuoPuu(PhysicsGame game, double x, double y, double height, double width, double suunta)
+    {
+        GameObject puu = new GameObject(width, height, Shape.Rectangle, x, y);
+        puu.Color = Color.Brown;
+        puu.Angle = Angle.FromRadians(suunta);
+        game.Add(puu);
+
+        if (height < 50) return;
+
+        double uheight = height * 0.8;
+        double uwidth = width * 0.95;
+        double osuunta = suunta - Math.PI / 5;
+        double vsuunta = suunta + Math.PI / 5;
+
+        LuoPuu(game, x + Math.Cos(osuunta) * ((height / 2) + (uheight / 2)), y + Math.Sin(osuunta) * ((height / 2) + (uheight / 2)), uheight, uwidth, osuunta);
+        
+    }
+
     private DoubleMeter CreateHealthbar(DoubleMeter hitpoints, double x, double y, string message)
     {
         hitpoints = new DoubleMeter(100);
@@ -108,7 +131,7 @@ public class Satkytaisto : PhysicsGame
     {
         Explosion osuma = new Explosion(100);
         osuma.Position = target.Position;
-        osuma.Speed = 1000;
+        osuma.Speed = 700;
         osuma.Force = 300;
         osuma.Image = null;
         osuma.Sound = block;
@@ -147,7 +170,7 @@ public class Satkytaisto : PhysicsGame
 
         Explosion osuma = new Explosion(100);
         osuma.Position = target.Position;
-        osuma.Speed = 1000;
+        osuma.Speed = 700;
         osuma.Force = 300;
         osuma.Image = null;
         osuma.Color = Color.Red;
@@ -183,7 +206,7 @@ public class Satkytaisto : PhysicsGame
 
         Explosion osuma = new Explosion(100);
         osuma.Position = target.Position;
-        osuma.Speed = 1000;
+        osuma.Speed = 700;
         osuma.Force = 300;
         osuma.Sound = bodyShot;
         osuma.Image = null;
@@ -268,7 +291,7 @@ public class Satkytaisto : PhysicsGame
         osa.Angle = Angle.FromDegrees(angle);
         osa.Color = color;
         //osa.LinearDamping = 0.999;
-        osa.Restitution = 0.5;
+        osa.Restitution = 0.7;
         osa.Tag = tag;
         game.Add(osa);
 
