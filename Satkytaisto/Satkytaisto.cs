@@ -28,7 +28,11 @@ public class Satkytaisto : PhysicsGame
         MediaPlayer.IsRepeating = true;
         MediaPlayer.Volume = 0.3;
 
-        LuoPuu(this, 0, Level.Bottom + 500, 1000, 20, 0.0);
+        LuoPuu(this, 0, Level.Bottom + 250, 500, 20, 0.0, Math.PI / 5);
+        LuoPuu(this, Level.Left + 250, Level.Bottom + 2000, 500, 20, Math.PI/2, Math.PI / 5);
+        LuoPuu(this, 0, Level.Top - 250, 500, 20, Math.PI, Math.PI / 5);
+        LuoPuu(this, Level.Right - 250, Level.Bottom + 2000, 500, 20, Math.PI * 1.5, Math.PI / 5);
+
         // PhysicsStructure pelaaja1
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.HotPink, "pelaaja1");
         List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Gold, "pelaaja2");
@@ -79,22 +83,28 @@ public class Satkytaisto : PhysicsGame
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
-    private static void LuoPuu(PhysicsGame game, double x, double y, double height, double width, double suunta)
+
+
+    private static void LuoPuu(PhysicsGame game, double x, double y, double height, double width, double suunta, double kulma)
     {
         GameObject puu = new GameObject(width, height, Shape.Rectangle, x, y);
         puu.Color = Color.Brown;
+        if (puu.Height < 100) puu.Color = Color.SpringGreen;
         puu.Angle = Angle.FromRadians(suunta);
         game.Add(puu);
 
-        if (height < 50) return;
+        if (height < 20) return;
 
-        double uheight = height * 0.8;
-        double uwidth = width * 0.95;
-        double osuunta = suunta - Math.PI / 5;
-        double vsuunta = suunta + Math.PI / 5;
+        double uHeight = height * 0.7;
+        double uWidth = width * 0.95;
+        double vSuunta = suunta + kulma;
+        double oSuunta = suunta - kulma;
+        // Work in  progress..
+        LuoPuu(game, x + Math.Sin(suunta) * (height / 2) + Math.Sin(vSuunta) * (uHeight / 2), y + Math.Cos(suunta) * (height / 2) + Math.Cos(vSuunta) * (uHeight / 2), uHeight, uWidth, vSuunta, kulma);
+        LuoPuu(game, x + Math.Sin(suunta) * (height / 2) + Math.Sin(oSuunta) * (uHeight / 2), y + Math.Cos(suunta) * (height / 2) + Math.Cos(oSuunta) * (uHeight / 2), uHeight, uWidth, oSuunta, kulma);
 
-        LuoPuu(game, x + Math.Cos(osuunta) * ((height / 2) + (uheight / 2)), y + Math.Sin(osuunta) * ((height / 2) + (uheight / 2)), uheight, uwidth, osuunta);
-        
+
+
     }
 
     private DoubleMeter CreateHealthbar(DoubleMeter hitpoints, double x, double y, string message)

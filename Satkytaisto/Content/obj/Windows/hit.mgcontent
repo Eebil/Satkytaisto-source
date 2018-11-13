@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/MyTemp/ohj1/eewerant/ht/Satkytaisto/Content/hit.wav</SourceFile>
-  <SourceTime>2018-11-07T11:32:15.2933733+02:00</SourceTime>
-  <DestFile>C:/MyTemp/ohj1/eewerant/ht/Satkytaisto/Content/bin/Windows/hit.xnb</DestFile>
-  <DestTime>2018-11-07T11:33:31.9988365+02:00</DestTime>
+  <SourceFile>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/hit.wav</SourceFile>
+  <SourceTime>2018-10-31T20:15:11.9621024+02:00</SourceTime>
+  <DestFile>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/bin/Windows/hit.xnb</DestFile>
+  <DestTime>2018-11-13T16:36:36.5074954+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2017-03-01T17:05:36+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>
