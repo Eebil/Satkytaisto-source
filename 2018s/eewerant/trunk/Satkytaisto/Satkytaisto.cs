@@ -4,7 +4,14 @@ using Jypeli;
 using Jypeli.Assets;
 using Jypeli.Controls;
 using Jypeli.Widgets;
-
+/// @author  Eetu Rantala
+/// @version 14.11.2018
+/// <summary>
+/// Peli, jossa taistellaan sätkynukeilla
+/// </summary>
+/// <remarks>
+/// </remarks>
+/// 
 public class Satkytaisto : PhysicsGame
 {
     DoubleMeter pelaaja1Hitpoints;
@@ -28,12 +35,11 @@ public class Satkytaisto : PhysicsGame
         MediaPlayer.IsRepeating = true;
         MediaPlayer.Volume = 0.3;
 
-        LuoPuu(this, 0, Level.Bottom + 250, 500, 20, 0.0, Math.PI / 5);
-        LuoPuu(this, Level.Left + 250, Level.Bottom + 2000, 500, 20, Math.PI/2, Math.PI / 5);
-        LuoPuu(this, 0, Level.Top - 250, 500, 20, Math.PI, Math.PI / 5);
-        LuoPuu(this, Level.Right - 250, Level.Bottom + 2000, 500, 20, Math.PI * 1.5, Math.PI / 5);
+        LuoPuu(this, 0, Level.Bottom + 250, 500, 20, 0.0, Math.PI / 4);
+        LuoPuu(this, Level.Left + 250, Level.Bottom + 2000, 500, 20, Math.PI/2, Math.PI / 4);
+        LuoPuu(this, 0, Level.Top - 250, 500, 20, Math.PI, Math.PI / 4);
+        LuoPuu(this, Level.Right - 250, Level.Bottom + 2000, 500, 20, Math.PI * 1.5, Math.PI / 4);
 
-        // PhysicsStructure pelaaja1
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.HotPink, "pelaaja1");
         List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Gold, "pelaaja2");
 
@@ -84,29 +90,45 @@ public class Satkytaisto : PhysicsGame
     }
 
 
-
+    /// <summary>
+    /// Luo fraktaalipuun koristamaan pelikenttää
+    /// </summary>
+    /// <param name="game">peli, johon luodaan</param>
+    /// <param name="x">puun rungon keskipisteen x-koordinaatti</param>
+    /// <param name="y">puun rungon keskipisteen y-koordinaatti</param>
+    /// <param name="height">Puun rungon korkeus</param>
+    /// <param name="width">Puun rungon leveys</param>
+    /// <param name="suunta">Suunta, johon puun runko osittaa</param>
+    /// <param name="kulma">Kulma, jolla halutaan oksien lähtevän rungosta</param>
     private static void LuoPuu(PhysicsGame game, double x, double y, double height, double width, double suunta, double kulma)
     {
         GameObject puu = new GameObject(width, height, Shape.Rectangle, x, y);
         puu.Color = Color.Brown;
-        if (puu.Height < 100) puu.Color = Color.SpringGreen;
+        if (puu.Height < 100) puu.Color = Color.ForestGreen;
         puu.Angle = Angle.FromRadians(suunta);
         game.Add(puu);
 
         if (height < 20) return;
 
         double uHeight = height * 0.7;
-        double uWidth = width * 0.95;
+        double uWidth = width * 0.85;
         double vSuunta = suunta + kulma;
         double oSuunta = suunta - kulma;
         // Work in  progress..
-        LuoPuu(game, x + Math.Sin(suunta) * (height / 2) + Math.Sin(vSuunta) * (uHeight / 2), y + Math.Cos(suunta) * (height / 2) + Math.Cos(vSuunta) * (uHeight / 2), uHeight, uWidth, vSuunta, kulma);
-        LuoPuu(game, x + Math.Sin(suunta) * (height / 2) + Math.Sin(oSuunta) * (uHeight / 2), y + Math.Cos(suunta) * (height / 2) + Math.Cos(oSuunta) * (uHeight / 2), uHeight, uWidth, oSuunta, kulma);
+        LuoPuu(game, x + Math.Sin(suunta) * (height / 2) + Math.Sin(oSuunta) * (uHeight / 2), y + Math.Cos(suunta) * (height / 2) + Math.Cos(oSuunta) * (uHeight / 2), uHeight, uWidth, vSuunta, kulma);
+        LuoPuu(game, x + Math.Sin(suunta) * (height / 2) + Math.Sin(vSuunta) * (uHeight / 2), y + Math.Cos(suunta) * (height / 2) + Math.Cos(vSuunta) * (uHeight / 2), uHeight, uWidth, oSuunta, kulma);
 
 
 
     }
-
+    /// <summary>
+    /// Aliohjelma luo pelaajille elämäpalkit
+    /// </summary>
+    /// <param name="hitpoints">Mittari, jolle palkki luodaan</param>
+    /// <param name="x">Palkin x-koordinaatti</param>
+    /// <param name="y">Palkin y-koordinaatti</param>
+    /// <param name="message">POISTETTAVA</param>
+    /// <returns></returns>
     private DoubleMeter CreateHealthbar(DoubleMeter hitpoints, double x, double y, string message)
     {
         hitpoints = new DoubleMeter(100);
@@ -122,7 +144,15 @@ public class Satkytaisto : PhysicsGame
         return hitpoints;
     }
 
-
+    /// <summary>
+    /// Luo tärmäyskäsittelijät hahmojen eri osille
+    /// </summary>
+    /// <param name="osat">Lista osista, joille törmäyskäsittelijä luodaan</param>
+    /// <param name="hitterAse">lyöjän vahinkoa tekevien osien tagi</param>
+    /// <param name="hitterHead">lyöjän pään tagi</param>
+    /// <param name="targetBody">kohteen vartalon tagi</param>
+    /// <param name="targetHead">kohteen pään tagi</param>
+    /// <param name="targetAse">kohteen vahinkoa tekevän osan tagi</param>
     private void LisaaTormayskasittelija(List<PhysicsObject> osat, string hitterAse, string hitterHead, string targetBody, string targetHead, string targetAse)
     {
         //TODO: (Ase--> body ..... Head ----> body) (Ase--->Head .....Ase---->Ase)  (Head-->Head)
@@ -225,7 +255,12 @@ public class Satkytaisto : PhysicsGame
 
 
     }
-
+    /// <summary>
+    /// antaa impulssin molemmille käsille
+    /// </summary>
+    /// <param name="ra">oikea käsi</param>
+    /// <param name="la">vasen käsi</param>
+    /// <param name="suunta">nytkäytyssuunta</param>
     private void HeilautaKasia(PhysicsObject ra, PhysicsObject la, Vector suunta)
     {
         ra.Hit(suunta);
@@ -236,12 +271,12 @@ public class Satkytaisto : PhysicsGame
     /// <summary>
     /// Aliohjelmalla luodaan kentälle pelihahmo, joka koostuu suorakulmion muotoisista komponenteista sekä ympyrän muotoisesta päästä
     /// </summary>
-    /// <param peli="game"></param>
-    /// <param X-koordinaatti="x"></param>
-    /// <param Y-koordinaatti="y"></param>
-    /// <param hahmon väri="color"></param>
-    /// <param hahmon tägi="tag"></param>
-    /// <returns></returns>
+    /// <param name="game">peli johon luodaan</param>
+    /// <param name="x">pelaajan jalkojen välisen pisteen x-koordinaatti</param>
+    /// <param name="y">pelaajan jalkojen välisen pisteen y-koordinaatti</param>
+    /// <param name="color">pelaajan väri</param>
+    /// <param name="tag">pelaajan tagi</param>
+    /// <returns>lista pelaajan koostavasta 10:stä osasta</returns>
     private static List<PhysicsObject> LuoPelihahmo(PhysicsGame game, double x, double y, Color color, string tag)
     {
         PhysicsObject la1, la2, ra1, ra2, h, b, ll1, ll2, rl1, rl2;
@@ -285,15 +320,15 @@ public class Satkytaisto : PhysicsGame
     /// <summary>
     /// Aliohjelmalla luodaan pelihahmon rakenneosana toimiva suorakulma annettujen parametrien avulla
     /// </summary>
-    /// <param peli="game"></param>
-    /// <param X-koordinaatti="x"></param>
-    /// <param Y-koordinaatti="y"></param>
-    /// <param osanKorkeus="height"></param>
-    /// <param osanLeveys="width"></param>
-    /// <param osanKulma="angle"></param>
-    /// <param osanVäri="color"></param>
-    /// <param osanTägi="tag"></param>
-    /// <returns></returns>
+    /// <param name="game">Peli, johon luodaan</param>
+    /// <param name="x">Osan keskipisteen x-koordinaatti</param>
+    /// <param name="y">Osan keskipisteen y-koordinaatti</param>
+    /// <param name="height">osan korkeus</param>
+    /// <param name="width">osan leveys</param>
+    /// <param name="angle">osan kulma</param>
+    /// <param name="color">osan väri</param>
+    /// <param name="tag">osan tagi</param>
+    /// <returns>palauttaa luodun osan LuoPelihahmo-aliohjelmalle</returns>
     private static PhysicsObject LuoOsa(PhysicsGame game, double x, double y, double height, double width, double angle, Color color, string tag)
     {
         //Luo suorakulmion muotoisen rakenneosan, parametreinä pituus voi vaihdella
@@ -314,13 +349,13 @@ public class Satkytaisto : PhysicsGame
     /// <summary>
     /// Aliohjelma luo pään hahmolle
     /// </summary>
-    /// <param peli="game"></param>
-    /// <param X-koordinaatti="x"></param>
-    /// <param Y-koordinaatti="y"></param>
-    /// <param päänSäde="r"></param>
-    /// <param päänVäri="color"></param>
-    /// <param päänTägi="tag"></param>
-    /// <returns></returns>
+    /// <param name="game">Peli, johon luodaan</param>
+    /// <param name="x">Pään keskipisteen x-koordinaatti</param>
+    /// <param name="y">Pään keskipisteen y-koordinaatti</param>
+    /// <param name="r">Pään säde</param>
+    /// <param name="color">Pään väri</param>
+    /// <param name="tag">Pään tagi</param>
+    /// <returns>Pään LuoPelihahmo aliohjelmalle</returns>
     private static PhysicsObject LuoPaa(PhysicsGame game, double x, double y, double r, Color color, string tag)
     {
         //luo pää tikku-ukolle
@@ -334,14 +369,14 @@ public class Satkytaisto : PhysicsGame
 
 
     /// <summary>
-    /// Aliohjelma luo nivel-liitoken kahden osan välille
+    /// Aliohjelma luo sarana-liitoken kahden osan välille
     /// </summary>
-    /// <param peli="game"></param>
-    /// <param sidottavaOsa1="osa1"></param>
-    /// <param sidottavaOsa2="osa2"></param>
-    /// <param nivelenX-koordinaatti="x"></param>
-    /// <param nivelenY-koordinaatti="y"></param>
-    /// <returns></returns>
+    /// <param name="game">Peli, johon liitos luodaan</param>
+    /// <param name="osa1">1. Liitettävä osa</param>
+    /// <param name="osa2">2. liitettävä osa</param>
+    /// <param name="x">Liitoksen x-koordinaatti</param>
+    /// <param name="y">Liitoksen y-koordinaatti</param>
+    /// <returns>Palauttaa liitoksen LuoPelihahmo aliohjelmalle</returns>
     private static AxleJoint LuoLiitos(PhysicsGame game, PhysicsObject osa1, PhysicsObject osa2, double x, double y)
     {
         AxleJoint liitos = new AxleJoint(osa1, osa2, new Vector(x, y));
@@ -350,7 +385,11 @@ public class Satkytaisto : PhysicsGame
         return liitos;
     }
 
-
+    /// <summary>
+    /// Liikuttaa pelajaa annettuun suntaan
+    /// </summary>
+    /// <param name="pelaaja">pelaajan pää, jota liikutetaan</param>
+    /// <param name="suunta">Suunta, mihin liikutetaan</param>
     private void LiikutaPelaajaa(PhysicsObject pelaaja, Vector suunta)
     {
         pelaaja.Push(suunta);
