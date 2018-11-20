@@ -14,7 +14,8 @@ using Jypeli.Widgets;
 /// 
 public class Satkytaisto : PhysicsGame
 {
-    DoubleMeter pelaaja1Hitpoints;
+    // TODO: julkisuusmääritelmät kuntoon
+    public DoubleMeter pelaaja1Hitpoints;
     DoubleMeter pelaaja2Hitpoints;
 
     SoundEffect bodyShot = LoadSoundEffect("hit");
@@ -22,9 +23,12 @@ public class Satkytaisto : PhysicsGame
     SoundEffect block = LoadSoundEffect("block");
     SoundEffect headShot = LoadSoundEffect("headshot");
 
-
+    /// <summary>
+    /// TODO: Dokumentointi kuntoon
+    /// </summary>
     public override void Begin()
     {
+        // LuoKentta()
         IsFullScreen = true;
         Level.Height = 4000;
         Level.Width = 4000;
@@ -36,7 +40,7 @@ public class Satkytaisto : PhysicsGame
         MediaPlayer.Volume = 0.3;
 
         LuoPuu(this, 0, Level.Bottom + 250, 500, 20, 0.0, Math.PI / 4);
-        LuoPuu(this, Level.Left + 250, Level.Bottom + 2000, 500, 20, Math.PI/2, Math.PI / 4);
+        LuoPuu(this, Level.Left + 250, Level.Bottom + 2000, 500, 20, Math.PI / 2, Math.PI / 4);
         LuoPuu(this, 0, Level.Top - 250, 500, 20, Math.PI, Math.PI / 4);
         LuoPuu(this, Level.Right - 250, Level.Bottom + 2000, 500, 20, Math.PI * 1.5, Math.PI / 4);
 
@@ -55,14 +59,14 @@ public class Satkytaisto : PhysicsGame
 
         //Camera.ZoomToAllObjects();
 
-        Camera.ZoomFactor = 0.5;          
+        Camera.ZoomFactor = 0.5;
         Camera.Follow(pelaaja1, pelaaja2);
 
         pelaaja1Hitpoints = CreateHealthbar(pelaaja1Hitpoints, Screen.Right - 200, Screen.Top - 20, "Player 1 Wins");
         pelaaja2Hitpoints = CreateHealthbar(pelaaja2Hitpoints, Screen.Left + 200, Screen.Top - 20, "Player 2 Wins");
 
 
-
+        // AsetaOhjaimet()
         Keyboard.Listen(Key.Left, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 vasemmalle", pelaaja1, new Vector(-5000, 0));
         Keyboard.Listen(Key.Right, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 oikealle", pelaaja1, new Vector(5000, 0));
         Keyboard.Listen(Key.Up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja1, new Vector(0, 5000));
@@ -81,8 +85,6 @@ public class Satkytaisto : PhysicsGame
 
         LisaaTormayskasittelija(p1Objects, "pelaaja1Ase", "pelaaja1Head", "pelaaja2Body", "pelaaja2Head", "pelaaja2Ase");
         LisaaTormayskasittelija(p2Objects, "pelaaja2Ase", "pelaaja2Head", "pelaaja1Body", "pelaaja1Head", "pelaaja1Ase");
-
-
 
 
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
@@ -121,6 +123,8 @@ public class Satkytaisto : PhysicsGame
 
 
     }
+
+
     /// <summary>
     /// Aliohjelma luo pelaajille elämäpalkit
     /// </summary>
@@ -132,7 +136,7 @@ public class Satkytaisto : PhysicsGame
     private DoubleMeter CreateHealthbar(DoubleMeter hitpoints, double x, double y, string message)
     {
         hitpoints = new DoubleMeter(100);
-        hitpoints.MaxValue = 100;
+        hitpoints.MaxValue = 100; // --> TODO: vakioksi
         //hitpoints.LowerLimit += ZeroHp(message);
 
         ProgressBar hpBar = new ProgressBar(300, 20);
@@ -167,6 +171,11 @@ public class Satkytaisto : PhysicsGame
         }
     }
 
+    /// <summary>
+    /// TODO: dokumentaatiot kuntoon
+    /// </summary>
+    /// <param name="hitter"></param>
+    /// <param name="target"></param>
     private void BlockShot(IPhysicsObject hitter, IPhysicsObject target)
     {
         Explosion osuma = new Explosion(100);
@@ -175,7 +184,7 @@ public class Satkytaisto : PhysicsGame
         osuma.Force = 300;
         osuma.Image = null;
         osuma.Sound = block;
-        Add(osuma); 
+        Add(osuma);
     }
 
     private void HeadShot(IPhysicsObject hitter, IPhysicsObject target)
@@ -183,7 +192,7 @@ public class Satkytaisto : PhysicsGame
         if (target.Tag.ToString() == "pelaaja2Head")
         {
             pelaaja2Hitpoints.Value -= 10;
-           // pelaaja2Hitpoints -= 10;
+            // pelaaja2Hitpoints -= 10;
             if (pelaaja2Hitpoints.Value <= 0)
             {
                 target.Destroy();
@@ -197,7 +206,7 @@ public class Satkytaisto : PhysicsGame
         if (target.Tag.ToString() == "pelaaja1Head")
         {
             pelaaja1Hitpoints.Value -= 10;
-           // pelaaja1Hitpoints -= 10;
+            // pelaaja1Hitpoints -= 10;
             if (pelaaja1Hitpoints.Value <= 0)
             {
                 target.Destroy();
@@ -224,7 +233,7 @@ public class Satkytaisto : PhysicsGame
         if (target.Tag.ToString() == "pelaaja2Body")
         {
             pelaaja2Hitpoints.Value -= 5;
-           // pelaaja2Hitpoints -= 5;
+            // pelaaja2Hitpoints -= 5;
             if (pelaaja2Hitpoints.Value <= 0)
             {
                 target.Destroy();
@@ -235,7 +244,7 @@ public class Satkytaisto : PhysicsGame
         if (target.Tag.ToString() == "pelaaja1Body")
         {
             pelaaja1Hitpoints.Value -= 5;
-           // pelaaja1Hitpoints -= 5;
+            // pelaaja1Hitpoints -= 5;
             if (pelaaja1Hitpoints.Value <= 0)
             {
                 target.Destroy();

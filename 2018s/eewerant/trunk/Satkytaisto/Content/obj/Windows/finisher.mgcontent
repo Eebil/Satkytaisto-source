@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/finisher.wav</SourceFile>
-  <SourceTime>2018-10-31T20:27:06.7937313+02:00</SourceTime>
-  <DestFile>C:/Users/Liisa/Desktop/Ohjelmointi/ht/Satkytaisto/Content/bin/Windows/finisher.xnb</DestFile>
-  <DestTime>2018-11-13T16:36:36.7102958+02:00</DestTime>
+  <SourceFile>C:/MyTemp/eewerant/Satkytaisto/Content/finisher.wav</SourceFile>
+  <SourceTime>2018-11-20T17:22:56.5208202+02:00</SourceTime>
+  <DestFile>C:/MyTemp/eewerant/Satkytaisto/Content/bin/Windows/finisher.xnb</DestFile>
+  <DestTime>2018-11-20T17:26:06.8801464+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2017-03-01T17:05:36+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>
