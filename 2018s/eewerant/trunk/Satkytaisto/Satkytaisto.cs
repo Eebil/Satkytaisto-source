@@ -22,23 +22,43 @@ public class Satkytaisto : PhysicsGame
     public SoundEffect block = LoadSoundEffect("block");
     public SoundEffect headShot = LoadSoundEffect("headshot");
 
-/// <summary>
-/// Pelin luominen alkaa
-/// </summary>
+    public PhysicsObject pelaaja1;
+    public PhysicsObject pelaaja1Ra;
+    public PhysicsObject pelaaja1La;
+
+    public PhysicsObject pelaaja2;
+    public PhysicsObject pelaaja2Ra;
+    public PhysicsObject pelaaja2La;
+
+    /// <summary>
+    /// Pelin luominen alkaa
+    /// </summary>
     public override void Begin()
     {
         LuoKentta(this);
+        LuoHahmot();
+        AsetaOhjaimet();
 
+        PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
+        Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
+    }
+
+
+    /// <summary>
+    /// Luodaan pelihahmot kentälle ja edeleen toisilla aliohjelmilla törmäyskäsittelijät, elämäpalkit ja kamerakontrolit
+    /// </summary>
+    void LuoHahmot()
+    {
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.HotPink, "pelaaja1");
         List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Gold, "pelaaja2");
 
-        PhysicsObject pelaaja1 = p1Objects[9];
-        PhysicsObject pelaaja1Ra = p1Objects[7];
-        PhysicsObject pelaaja1La = p1Objects[5];
+        pelaaja1 = p1Objects[9];
+        pelaaja1Ra = p1Objects[7];
+        pelaaja1La = p1Objects[5];
 
-        PhysicsObject pelaaja2 = p2Objects[9];
-        PhysicsObject pelaaja2Ra = p2Objects[7];
-        PhysicsObject pelaaja2La = p2Objects[5];
+        pelaaja2 = p2Objects[9];
+        pelaaja2Ra = p2Objects[7];
+        pelaaja2La = p2Objects[5];
 
         Camera.ZoomFactor = 0.5;
         Camera.Follow(pelaaja1, pelaaja2);
@@ -49,10 +69,14 @@ public class Satkytaisto : PhysicsGame
         LisaaTormayskasittelija(p1Objects, "pelaaja1Ase", "pelaaja1Head", "pelaaja2Body", "pelaaja2Head", "pelaaja2Ase");
         LisaaTormayskasittelija(p2Objects, "pelaaja2Ase", "pelaaja2Head", "pelaaja1Body", "pelaaja1Head", "pelaaja1Ase");
 
-       // AsetaOhjaimet(Key.Left, Key.Right, Key.Up, Key.Down, Key.RightShift, Key.RightControl, "pelaaja1", pelaaja1, pelaaja1La, pelaaja1Ra);
-       // AsetaOhjaimet(Key.A, Key.D, Key.W, Key.S, Key.G, Key.V, "pelaaja2", pelaaja2, pelaaja2La, pelaaja2Ra);
-       // TODO: En saa toimimaan
+    }
 
+
+    /// <summary>
+    /// Luodaan palihahmoille ohjaimet
+    /// </summary>
+    void AsetaOhjaimet()
+    {
         Keyboard.Listen(Key.Left, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 vasemmalle", pelaaja1, new Vector(-5000, 0));
         Keyboard.Listen(Key.Right, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 oikealle", pelaaja1, new Vector(5000, 0));
         Keyboard.Listen(Key.Up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja1, new Vector(0, 5000));
@@ -68,27 +92,11 @@ public class Satkytaisto : PhysicsGame
 
         Keyboard.Listen(Key.G, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia ylös", pelaaja2Ra, pelaaja2La, new Vector(0, 1000));
         Keyboard.Listen(Key.V, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia alas", pelaaja2Ra, pelaaja2La, new Vector(0, -1000));
-        
-        PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
-        Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
 
-  /*  private static void AsetaOhjaimet(Key left, Key right, Key up, Key down, Key nudgeUp, Key nudgeDown, string pelaaja, PhysicsObject head, PhysicsObject la, PhysicsObject ra)
-    {
-        Keyboard.Listen(left, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 vasemmalle", pelaaja, new Vector(-5000, 0));
-        Keyboard.Listen(right, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 oikealle", pelaaja, new Vector(5000, 0));
-        Keyboard.Listen(up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja, new Vector(0, 5000));
-        Keyboard.Listen(down, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 alas", pelaaja, new Vector(0, -5000));
-
-        Keyboard.Listen(nudgeUp, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia ylös", ra, la, new Vector(0, 1000));
-        Keyboard.Listen(nudgeDown, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia alas", ra, la, new Vector(0, -1000));
-
-    }*/
-
-
     /// <summary>
-    /// Luodaan knetän reunat, painovoima, kamera-asetukset, taustamusiikki ja koristepuut
+    /// Luodaan knetän reunat, painovoima, taustamusiikki ja koristepuut
     /// </summary>
     /// <param name="game">peli, johon ludaan</param>
     private static void LuoKentta(PhysicsGame game)
@@ -154,7 +162,7 @@ public class Satkytaisto : PhysicsGame
     private DoubleMeter CreateHealthbar(DoubleMeter hitpoints, double x, double y, string message)
     {
         hitpoints = new DoubleMeter(100);
-        hitpoints.MaxValue = 100; 
+        hitpoints.MaxValue = 100;
 
         ProgressBar hpBar = new ProgressBar(300, 20);
         hpBar.X = x;
