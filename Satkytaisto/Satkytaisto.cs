@@ -14,35 +14,20 @@ using Jypeli.Widgets;
 /// 
 public class Satkytaisto : PhysicsGame
 {
-    // TODO: julkisuusmääritelmät kuntoon
     public DoubleMeter pelaaja1Hitpoints;
-    DoubleMeter pelaaja2Hitpoints;
+    public DoubleMeter pelaaja2Hitpoints;
 
-    SoundEffect bodyShot = LoadSoundEffect("hit");
-    SoundEffect finisher = LoadSoundEffect("finisher");
-    SoundEffect block = LoadSoundEffect("block");
-    SoundEffect headShot = LoadSoundEffect("headshot");
+    public SoundEffect bodyShot = LoadSoundEffect("hit");
+    public SoundEffect finisher = LoadSoundEffect("finisher");
+    public SoundEffect block = LoadSoundEffect("block");
+    public SoundEffect headShot = LoadSoundEffect("headshot");
 
-    /// <summary>
-    /// TODO: Dokumentointi kuntoon
-    /// </summary>
+/// <summary>
+/// Pelin luominen alkaa
+/// </summary>
     public override void Begin()
     {
-        // LuoKentta()
-        IsFullScreen = true;
-        Level.Height = 4000;
-        Level.Width = 4000;
-        Level.CreateBorders();
-        Level.BackgroundColor = Color.Black;
-        Gravity = new Vector(0, -700);
-        MediaPlayer.Play("XDerpacito");
-        MediaPlayer.IsRepeating = true;
-        MediaPlayer.Volume = 0.3;
-
-        LuoPuu(this, 0, Level.Bottom + 250, 500, 20, 0.0, Math.PI / 4);
-        LuoPuu(this, Level.Left + 250, Level.Bottom + 2000, 500, 20, Math.PI / 2, Math.PI / 4);
-        LuoPuu(this, 0, Level.Top - 250, 500, 20, Math.PI, Math.PI / 4);
-        LuoPuu(this, Level.Right - 250, Level.Bottom + 2000, 500, 20, Math.PI * 1.5, Math.PI / 4);
+        LuoKentta(this);
 
         List<PhysicsObject> p1Objects = LuoPelihahmo(this, 500, Level.Bottom + 200, Color.HotPink, "pelaaja1");
         List<PhysicsObject> p2Objects = LuoPelihahmo(this, -500, Level.Bottom + 200, Color.Gold, "pelaaja2");
@@ -55,18 +40,19 @@ public class Satkytaisto : PhysicsGame
         PhysicsObject pelaaja2Ra = p2Objects[7];
         PhysicsObject pelaaja2La = p2Objects[5];
 
-
-
-        //Camera.ZoomToAllObjects();
-
         Camera.ZoomFactor = 0.5;
         Camera.Follow(pelaaja1, pelaaja2);
 
         pelaaja1Hitpoints = CreateHealthbar(pelaaja1Hitpoints, Screen.Right - 200, Screen.Top - 20, "Player 1 Wins");
         pelaaja2Hitpoints = CreateHealthbar(pelaaja2Hitpoints, Screen.Left + 200, Screen.Top - 20, "Player 2 Wins");
 
+        LisaaTormayskasittelija(p1Objects, "pelaaja1Ase", "pelaaja1Head", "pelaaja2Body", "pelaaja2Head", "pelaaja2Ase");
+        LisaaTormayskasittelija(p2Objects, "pelaaja2Ase", "pelaaja2Head", "pelaaja1Body", "pelaaja1Head", "pelaaja1Ase");
 
-        // AsetaOhjaimet()
+       // AsetaOhjaimet(Key.Left, Key.Right, Key.Up, Key.Down, Key.RightShift, Key.RightControl, "pelaaja1", pelaaja1, pelaaja1La, pelaaja1Ra);
+       // AsetaOhjaimet(Key.A, Key.D, Key.W, Key.S, Key.G, Key.V, "pelaaja2", pelaaja2, pelaaja2La, pelaaja2Ra);
+       // TODO: En saa toimimaan
+
         Keyboard.Listen(Key.Left, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 vasemmalle", pelaaja1, new Vector(-5000, 0));
         Keyboard.Listen(Key.Right, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 oikealle", pelaaja1, new Vector(5000, 0));
         Keyboard.Listen(Key.Up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja1, new Vector(0, 5000));
@@ -82,13 +68,45 @@ public class Satkytaisto : PhysicsGame
 
         Keyboard.Listen(Key.G, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia ylös", pelaaja2Ra, pelaaja2La, new Vector(0, 1000));
         Keyboard.Listen(Key.V, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja2 käsia alas", pelaaja2Ra, pelaaja2La, new Vector(0, -1000));
-
-        LisaaTormayskasittelija(p1Objects, "pelaaja1Ase", "pelaaja1Head", "pelaaja2Body", "pelaaja2Head", "pelaaja2Ase");
-        LisaaTormayskasittelija(p2Objects, "pelaaja2Ase", "pelaaja2Head", "pelaaja1Body", "pelaaja1Head", "pelaaja1Ase");
-
-
+        
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
+    }
+
+
+  /*  private static void AsetaOhjaimet(Key left, Key right, Key up, Key down, Key nudgeUp, Key nudgeDown, string pelaaja, PhysicsObject head, PhysicsObject la, PhysicsObject ra)
+    {
+        Keyboard.Listen(left, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 vasemmalle", pelaaja, new Vector(-5000, 0));
+        Keyboard.Listen(right, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 oikealle", pelaaja, new Vector(5000, 0));
+        Keyboard.Listen(up, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 ylös", pelaaja, new Vector(0, 5000));
+        Keyboard.Listen(down, ButtonState.Down, LiikutaPelaajaa, "liikuta pelaaja1 alas", pelaaja, new Vector(0, -5000));
+
+        Keyboard.Listen(nudgeUp, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia ylös", ra, la, new Vector(0, 1000));
+        Keyboard.Listen(nudgeDown, ButtonState.Pressed, HeilautaKasia, "heilauta pelaaja1 käsia alas", ra, la, new Vector(0, -1000));
+
+    }*/
+
+
+    /// <summary>
+    /// Luodaan knetän reunat, painovoima, kamera-asetukset, taustamusiikki ja koristepuut
+    /// </summary>
+    /// <param name="game">peli, johon ludaan</param>
+    private static void LuoKentta(PhysicsGame game)
+    {
+        game.IsFullScreen = true;
+        game.Level.Height = 4000;
+        game.Level.Width = 4000;
+        game.Level.CreateBorders();
+        game.Level.BackgroundColor = Color.Black;
+        game.Gravity = new Vector(0, -700);
+        game.MediaPlayer.Play("XDerpacito");
+        game.MediaPlayer.IsRepeating = true;
+        game.MediaPlayer.Volume = 0.3;
+
+        LuoPuu(game, 0, game.Level.Bottom + 250, 500, 20, 0.0, Math.PI / 4);
+        LuoPuu(game, game.Level.Left + 250, game.Level.Bottom + 2000, 500, 20, Math.PI / 2, Math.PI / 4);
+        LuoPuu(game, 0, game.Level.Top - 250, 500, 20, Math.PI, Math.PI / 4);
+        LuoPuu(game, game.Level.Right - 250, game.Level.Bottom + 2000, 500, 20, Math.PI * 1.5, Math.PI / 4);
     }
 
 
@@ -136,8 +154,7 @@ public class Satkytaisto : PhysicsGame
     private DoubleMeter CreateHealthbar(DoubleMeter hitpoints, double x, double y, string message)
     {
         hitpoints = new DoubleMeter(100);
-        hitpoints.MaxValue = 100; // --> TODO: vakioksi
-        //hitpoints.LowerLimit += ZeroHp(message);
+        hitpoints.MaxValue = 100; 
 
         ProgressBar hpBar = new ProgressBar(300, 20);
         hpBar.X = x;
@@ -159,7 +176,6 @@ public class Satkytaisto : PhysicsGame
     /// <param name="targetAse">kohteen vahinkoa tekevän osan tagi</param>
     private void LisaaTormayskasittelija(List<PhysicsObject> osat, string hitterAse, string hitterHead, string targetBody, string targetHead, string targetAse)
     {
-        //TODO: (Ase--> body ..... Head ----> body) (Ase--->Head .....Ase---->Ase)  (Head-->Head)
         foreach (PhysicsObject osa in osat)
         {
             if (osa.Tag.ToString() == hitterAse || osa.Tag.ToString() == hitterHead)
@@ -172,10 +188,10 @@ public class Satkytaisto : PhysicsGame
     }
 
     /// <summary>
-    /// TODO: dokumentaatiot kuntoon
+    /// Luo törmäyskäsittelijät hahmojen "ase"-osien törmäyksille
     /// </summary>
-    /// <param name="hitter"></param>
-    /// <param name="target"></param>
+    /// <param name="hitter">lyöjä</param>
+    /// <param name="target">kohde</param>
     private void BlockShot(IPhysicsObject hitter, IPhysicsObject target)
     {
         Explosion osuma = new Explosion(100);
@@ -187,18 +203,22 @@ public class Satkytaisto : PhysicsGame
         Add(osuma);
     }
 
+
+    /// <summary>
+    /// Luo törmäyskäsittelijät päähän kohdistuville osumille
+    /// </summary>
+    /// <param name="hitter">lyöjä</param>
+    /// <param name="target">kohde</param>
     private void HeadShot(IPhysicsObject hitter, IPhysicsObject target)
     {
         if (target.Tag.ToString() == "pelaaja2Head")
         {
             pelaaja2Hitpoints.Value -= 10;
-            // pelaaja2Hitpoints -= 10;
             if (pelaaja2Hitpoints.Value <= 0)
             {
                 target.Destroy();
                 finisher.Play();
                 Camera.ZoomToLevel();
-                //ClearControls();
                 //TODO PELAAJA 1 VOITTI
             }
         }
@@ -206,13 +226,11 @@ public class Satkytaisto : PhysicsGame
         if (target.Tag.ToString() == "pelaaja1Head")
         {
             pelaaja1Hitpoints.Value -= 10;
-            // pelaaja1Hitpoints -= 10;
             if (pelaaja1Hitpoints.Value <= 0)
             {
                 target.Destroy();
                 finisher.Play();
                 Camera.ZoomToLevel();
-                //ClearControls();
                 //TODO PELAAJA 2 VOITTI
             }
         }
@@ -228,23 +246,25 @@ public class Satkytaisto : PhysicsGame
     }
 
 
+    /// <summary>
+    /// Luo törmäyskäsittelijät vartaloon kohdistuville osumille
+    /// </summary>
+    /// <param name="hitter">lyöjä</param>
+    /// <param name="target">kohde</param>
     private void BodyShot(PhysicsObject hitter, PhysicsObject target)
     {
         if (target.Tag.ToString() == "pelaaja2Body")
         {
             pelaaja2Hitpoints.Value -= 5;
-            // pelaaja2Hitpoints -= 5;
             if (pelaaja2Hitpoints.Value <= 0)
             {
                 target.Destroy();
                 finisher.Play();
             }
         }
-        // Tässä toistoa, mutta en osaa antaa lisää parametreja tuolta collision handlereista
         if (target.Tag.ToString() == "pelaaja1Body")
         {
             pelaaja1Hitpoints.Value -= 5;
-            // pelaaja1Hitpoints -= 5;
             if (pelaaja1Hitpoints.Value <= 0)
             {
                 target.Destroy();
@@ -264,6 +284,8 @@ public class Satkytaisto : PhysicsGame
 
 
     }
+
+
     /// <summary>
     /// antaa impulssin molemmille käsille
     /// </summary>
@@ -290,7 +312,7 @@ public class Satkytaisto : PhysicsGame
     {
         PhysicsObject la1, la2, ra1, ra2, h, b, ll1, ll2, rl1, rl2;
         double sivu = 100;
-        // luo pelihahmon osat aliohjemalla, liitä osat yhteen parametrina tulee ukon jalkojen välissä olevan pisteen paikka pelikentällä, jonka suhteen muut palikat luodaan DONE
+        // luo pelihahmon osat aliohjemalla, liitä osat yhteen parametrina tulee ukon jalkojen välissä olevan pisteen paikka pelikentällä, jonka suhteen muut palikat luodaan
 
         // Nämä osat muodostavat pelihahmot haavoittuvat osat
         ll1 = LuoOsa(game, x - ((0.5 * sivu) / Math.Sqrt(2.0)), y + (sivu / Math.Sqrt(2.0)), sivu, 0.25 * sivu, -45d, color, tag + "Body");
@@ -310,7 +332,6 @@ public class Satkytaisto : PhysicsGame
 
         List<PhysicsObject> objects = new List<PhysicsObject>() { ll1, ll2, rl1, rl2, la1, la2, ra1, ra2, b, h };
 
-        // Muuta aliohjelmaksi ja korvaa kaikki liitokset axlejointeilla. DONE
         AxleJoint rightElbow = LuoLiitos(game, ra1, ra2, ra1.X + (0.5 * sivu), ra1.Y);
         AxleJoint leftElbow = LuoLiitos(game, la1, la2, la1.X - (0.5 * sivu), la1.Y);
         AxleJoint leftShoulder = LuoLiitos(game, la1, b, la1.X + (0.5 * sivu), la1.Y);
@@ -321,7 +342,6 @@ public class Satkytaisto : PhysicsGame
         AxleJoint leftHip = LuoLiitos(game, rl1, b, x, y + ((1.5 * sivu) / Math.Sqrt(2.0)));
         AxleJoint neck = LuoLiitos(game, h, b, x, b.Y + sivu);
 
-        // Tee Lista osista ja palauta kaikki pääohjelman käyttöön
         return objects;
     }
 
@@ -393,6 +413,7 @@ public class Satkytaisto : PhysicsGame
         game.Add(liitos);
         return liitos;
     }
+
 
     /// <summary>
     /// Liikuttaa pelajaa annettuun suntaan
